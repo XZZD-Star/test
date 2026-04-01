@@ -1,0 +1,24 @@
+# Normalize source text files to LF across Windows and Linux/VM checkouts.
+* text=auto eol=lf
+
+# Keep Windows script files in CRLF where tooling expects it.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Common binary assets and model files.
+*.a binary
+*.axf binary
+*.bmp binary
+*.gif binary
+*.h5 binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.lib binary
+*.pdf binary
+*.png binary
+*.rar binary
+*.tflite binary
+*.zip binary
+*.7z binary

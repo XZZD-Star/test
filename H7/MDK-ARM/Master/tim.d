@@ -1,0 +1,41 @@
+master\tim.o: ../Core/Src/tim.c
+master\tim.o: ../Core/Inc/tim.h
+master\tim.o: ../Core/Inc/main.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
+master\tim.o: ../Core/Inc/stm32h7xx_hal_conf.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h
+master\tim.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h
+master\tim.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h743xx.h
+master\tim.o: ../Drivers/CMSIS/Include/core_cm7.h
+master\tim.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\stdint.h
+master\tim.o: ../Drivers/CMSIS/Include/cmsis_version.h
+master\tim.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+master\tim.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+master\tim.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+master\tim.o: ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
+master\tim.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\stddef.h
+master\tim.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\math.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_dma_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_mdma.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_exti.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_cortex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_crc.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_crc_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_flash_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_hsem.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h
+master\tim.o: ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h

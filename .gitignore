@@ -1,0 +1,30 @@
+# OS / editor noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+.vscode/
+*.tmp
+*.bak
+
+# Keil / MDK-ARM user-specific files
+MDK-ARM/*.uvoptx
+MDK-ARM/*.uvguix.*
+MDK-ARM/DebugConfig/
+
+# Keil / MDK-ARM build output
+MDK-ARM/**/*.axf
+MDK-ARM/**/*.crf
+MDK-ARM/**/*.d
+MDK-ARM/**/*.dep
+MDK-ARM/**/*.hex
+MDK-ARM/**/*.htm
+MDK-ARM/**/*.iex
+MDK-ARM/**/*.lnp
+MDK-ARM/**/*.lst
+MDK-ARM/**/*.map
+MDK-ARM/**/*.o
+MDK-ARM/**/*_sct.Bak
+
+# STM32Cube / compiler listings
+Listings/
