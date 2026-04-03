@@ -1,0 +1,89 @@
+<view class="container train-page">
+  
+  <!-- 状态栏 -->
+  <view class="status-bar flex justify-between align-center mb-30">
+    <view class="flex-col">
+      <text class="plan-name font-bold">{{planName}}</text>
+      <text class="action-name mt-10 {{status === 'running' ? 'text-primary' : ''}}">当前进行: {{currentPlan.name}} ({{currentPlanIndex + 1}}/{{planList.length}})</text>
+    </view>
+    <view class="device-tag flex align-center {{deviceStatus === '在线' ? 'device-on' : 'device-off'}}">
+      <view class="dot"></view>
+      <text>{{deviceStatus}}</text>
+    </view>
+  </view>
+
+  <!-- 核心进度区 -->
+  <view class="card progress-card flex-col align-center justify-center">
+    <view class="progress-circle {{animClass}}">
+      <text class="count-num text-primary">{{finishedCount}}</text>
+      <text class="count-label" style="font-size:24rpx; color:#888;">当前本组完成次数</text>
+    </view>
+    <view class="progress-info flex justify-between mt-40">
+      <view class="flex-col align-center">
+        <text class="info-val">{{targetCount}}</text>
+        <text class="info-label">本组目标</text>
+      </view>
+      <view class="divider"></view>
+      <view class="flex-col align-center">
+        <text class="info-val">{{remainCount}}</text>
+        <text class="info-label">本组剩余</text>
+      </view>
+    </view>
+    
+    <view style="margin-top: 50rpx; width: 100%;" class="flex-col align-center justify-center">
+      <text class="text-sub font-bold mb-10" style="font-size: 26rpx;">今日总计划进度: {{totalFinished}} / {{totalTarget}} ({{progressPercent}}%)</text>
+      <view class="progress-bar-container w-100">
+        <view class="progress-bar">
+          <view class="progress-inner" style="width: {{progressPercent}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 识别反馈与生理监测并排 -->
+  <view class="flex justify-between mb-30 w-100 gap-20">
+    <!-- 反馈区 -->
+    <view class="card mini-card flex-1">
+      <view class="mini-title mb-20">动作识别反馈</view>
+      <view class="flex-col">
+        <text class="text-sub mb-10">识别: <text class="font-bold text-main">{{recognizeAction}}</text></text>
+        <text class="text-sub mb-20">置信度: <text class="font-bold text-main">{{confidence}}</text></text>
+        <view class="prompt-box prompt-{{promptType}}">
+          {{promptText}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 健康区 -->
+    <view class="card mini-card flex-1">
+      <view class="mini-title mb-20">生理状态</view>
+      <view class="flex-col">
+        <view class="flex justify-between align-center mb-10">
+          <text class="text-sub">心率</text>
+          <text class="font-bold {{healthStatus === '异常' ? 'text-danger' : 'text-main'}}">{{heartRate}} bpm</text>
+        </view>
+        <view class="flex justify-between align-center mb-20">
+          <text class="text-sub">血氧</text>
+          <text class="font-bold {{healthStatus === '警告' ? 'text-warning' : 'text-primary'}}">{{bloodOxygen}}%</text>
+        </view>
+        <view class="prompt-box prompt-{{healthStatus === '正常' ? 'success' : (healthStatus === '警告' ? 'warning' : 'danger')}}">
+          {{healthStatus === '正常' ? '状体良好，可继续' : (healthStatus === '警告' ? '注意身体反应' : '警告！请立即休息')}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 控制按钮区 -->
+  <view class="control-area w-100 mt-20">
+    <button wx:if="{{status === 'ready'}}" class="btn-primary w-100 round-btn" bindtap="handleStart">开始训练</button>
+    <view wx:elif="{{status === 'running'}}" class="flex justify-between gap-30">
+      <button class="btn-warning flex-1 round-btn" bindtap="handlePause">暂停</button>
+      <button class="btn-danger flex-1 round-btn" bindtap="handleFinish">结束训练</button>
+    </view>
+    <view wx:elif="{{status === 'paused'}}" class="flex justify-between gap-30">
+      <button class="btn-primary flex-1 round-btn" bindtap="handleResume">继续</button>
+      <button class="btn-danger flex-1 round-btn" bindtap="handleFinish">结束训练</button>
+    </view>
+    <button wx:else class="btn-disabled w-100 round-btn">训练已结束</button>
+  </view>
+</view>

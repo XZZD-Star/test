@@ -1,0 +1,38 @@
+<view class="container device-page page-enter">
+  <view class="device-hero card flex-col align-center mt-20 mb-40">
+    <view class="device-icon box-shadow flex align-center justify-center mb-30">
+      <view class="radar-circle {{deviceStatus === '在线' ? 'radar-anim' : ''}}"></view>
+      <text class="icon-text">B</text>
+    </view>
+    <text class="font-bold text-lg mb-10">{{deviceName}}</text>
+    <view class="status-tag {{deviceStatus === '在线' ? 'tag-success' : 'tag-warning'}} px-30 py-10 round-tag">{{deviceStatus}}</view>
+  </view>
+
+  <view class="section-title text-main font-bold mb-20 px-10">详细状态</view>
+  <view class="card info-card flex-col mb-40 w-100">
+    <view class="info-item flex justify-between align-center mb-30">
+      <text class="i-label">OneNET 平台状态</text>
+      <text class="i-val {{onenetStatus === '已连接' ? 'text-primary' : 'text-danger'}} font-bold">{{onenetStatus}}</text>
+    </view>
+    <view class="info-item flex justify-between align-center mb-30">
+      <text class="i-label">数据上传流</text>
+      <text class="i-val">{{uploadStatus}}</text>
+    </view>
+    <view class="info-item flex justify-between align-center">
+      <text class="i-label">最后同步时间</text>
+      <text class="i-val text-muted">{{lastSyncTime}}</text>
+    </view>
+  </view>
+
+  <view class="section-title text-main font-bold mb-20 px-10">下发测试 (test属性)</view>
+  <view class="card info-card flex mb-40 w-100 align-center justify-between">
+    <input class="test-input" type="number" value="{{testValue}}" bindinput="onTestInput" placeholder="输入0-999整数" maxlength="3" />
+    <button class="btn-primary round-btn test-btn ml-20" bindtap="sendTest" hover-class="none" disabled="{{testLoading}}">
+      {{testLoading ? '发送中...' : '发送测试数据'}}
+    </button>
+  </view>
+
+  <button class="btn-outline w-100 round-btn mt-auto" bindtap="reconnect" hover-class="none" disabled="{{loading}}">
+    {{loading ? '连接中...' : '重新检测连接'}}
+  </button>
+</view>

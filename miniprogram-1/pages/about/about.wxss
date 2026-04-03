@@ -1,0 +1,40 @@
+page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+}
+.about-page {
+  padding: 40rpx;
+  position: relative;
+  min-height: 100vh;
+}
+.pt-100 { padding-top: 100rpx; }
+.logo-box {
+  width: 160rpx;
+  height: 160rpx;
+  background: var(--primary-color);
+  border-radius: 40rpx;
+  box-shadow: 0 10rpx 30rpx rgba(47, 84, 235, 0.4);
+}
+.logo-icon {
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #fff;
+}
+.app-name { font-size: 40rpx;}
+.app-version { font-size: 28rpx;}
+
+.desc-card {
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+}
+.desc-title { font-size: 32rpx; text-align: center; }
+.desc-content { font-size: 28rpx; color: var(--text-sub); line-height: 1.6; text-align: justify; }
+
+.footer {
+  position: absolute;
+  bottom: 60rpx;
+  width: 100%;
+  left: 0;
+  font-size: 24rpx;
+}

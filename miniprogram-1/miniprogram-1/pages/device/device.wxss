@@ -1,0 +1,86 @@
+page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+}
+.device-page {
+  padding: 30rpx;
+}
+.device-hero {
+  padding: 60rpx 40rpx;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%);
+  border: 2rpx solid #fff;
+}
+.device-icon {
+  width: 160rpx;
+  height: 160rpx;
+  background: var(--card-bg);
+  border-radius: 50%;
+  position: relative;
+  border: 4rpx solid var(--primary-color);
+}
+.box-shadow {
+  box-shadow: 0 10rpx 30rpx rgba(47, 84, 235, 0.2);
+}
+.icon-text { font-size: 60rpx; color: var(--primary-color); font-weight: bold; position: relative; z-index: 2; }
+.radar-circle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: rgba(47, 84, 235, 0.2);
+  z-index: 1;
+}
+.radar-anim {
+  animation: radar 2s infinite ease-out;
+}
+@keyframes radar {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+}
+.text-lg { font-size: 36rpx; }
+.round-tag { border-radius: 40rpx; font-size: 26rpx; }
+.tag-success { background: rgba(82, 196, 26, 0.1); color: var(--success-color); }
+.tag-warning { background: rgba(250, 173, 20, 0.1); color: var(--warning-color); }
+.px-10 { padding: 0 10rpx; }
+
+.info-card {
+  padding: 30rpx 40rpx;
+}
+.i-label { font-size: 28rpx; color: var(--text-sub); }
+.i-val { font-size: 30rpx; }
+.w-100 { width: 100%; box-sizing: border-box; }
+.round-btn {
+  border-radius: 50rpx;
+  height: 90rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+}
+
+/* 下发测试输入组件 */
+.test-input {
+  flex: 1;
+  height: 80rpx;
+  background: #f0f2f5;
+  border-radius: 40rpx;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  color: var(--text-main);
+  text-align: center;
+  font-weight: bold;
+}
+.test-btn {
+  width: auto !important;
+  padding: 0 30rpx !important;
+  height: 80rpx !important;
+  font-size: 28rpx !important;
+  line-height: normal !important;
+}
+.btn-outline {
+  background: transparent !important;
+  color: var(--primary-color) !important;
+  border: 2rpx solid var(--primary-color) !important;
+  box-shadow: none !important;
+}

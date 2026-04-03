@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  background-color: #f2f4f8;
+  padding: 30rpx;
+  padding-bottom: calc(30rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.flex-1 { flex: 1; }
+.mt-auto { margin-top: auto !important; }
+.pt-40 { padding-top: 40rpx; }
+
+/* 二级页面入场动画：在 wx.navigateTo 的 300ms 转场期间隐藏内容，转场结束后淡入 */
+@keyframes pageContentShow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.page-enter {
+  opacity: 0;
+  animation: pageContentShow 0.15s 0.3s forwards;
+}
+
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.align-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-around { justify-content: space-around; }
+
+.mt-10 { margin-top: 10rpx; }
+.mt-20 { margin-top: 20rpx; }
+.mt-30 { margin-top: 30rpx; }
+.mt-40 { margin-top: 40rpx; }
+
+.mb-10 { margin-bottom: 10rpx; }
+.mb-20 { margin-bottom: 20rpx; }
+.mb-30 { margin-bottom: 30rpx; }
+.mb-40 { margin-bottom: 40rpx; }
+.mb-60 { margin-bottom: 60rpx; }
+
+.ml-10 { margin-left: 10rpx; }
+.ml-20 { margin-left: 20rpx; }
+.ml-30 { margin-left: 30rpx; }
+
+.text-center { text-align: center; }
+
+.font-bold { font-weight: bold; }
+
+/* 颜色 */
+.text-primary { color: var(--primary-color); }
+.text-main { color: var(--text-main); }
+.text-sub { color: var(--text-sub); }
+.text-muted { color: var(--text-muted); }
+.text-success { color: var(--success-color); }
+.text-warning { color: var(--warning-color); }
+.text-danger { color: var(--danger-color); }
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-md);
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: var(--shadow);
+}
+

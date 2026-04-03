@@ -1,0 +1,18 @@
+<view class="container feedback-page page-enter">
+  <view class="section-title mb-20 font-bold">遇到的问题或功能建议</view>
+  <view class="card input-card mb-40 w-100">
+    <textarea 
+      class="fb-textarea w-100 placeholder-class" 
+      placeholder="请详细描述您的问题，或提供相关改进意见..."
+      maxlength="500"
+      bindinput="onInput"
+    ></textarea>
+  </view>
+  
+  <view class="section-title mb-20 font-bold">联系方式（选填）</view>
+  <view class="card input-card w-100 mb-40">
+    <input class="w-100 placeholder-class" placeholder="微信 / 手机号 / 邮箱" />
+  </view>
+
+  <button class="btn-primary w-100 round-btn mt-auto" bindtap="submitFeedback">提交反馈</button>
+</view>

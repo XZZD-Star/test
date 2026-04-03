@@ -1,0 +1,51 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/train/train",
+    "pages/result/result",
+    "pages/data/data",
+    "pages/mine/mine",
+    "pages/settings/settings",
+    "pages/about/about",
+    "pages/feedback/feedback",
+    "pages/plan/plan",
+    "pages/health/health",
+    "pages/device/device",
+    "pages/record-detail/record-detail"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarTitleText": "康复辅助助手",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f2f4f8"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#2f54eb",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "/static/home.png",
+        "selectedIconPath": "/static/home_select.png"
+      },
+      {
+        "pagePath": "pages/train/train",
+        "text": "训练",
+        "iconPath": "/static/plan.png",
+        "selectedIconPath": "/static/plan_select.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "/static/my.png",
+        "selectedIconPath": "/static/my_select.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,84 @@
+<view class="container">
+  
+  <!-- 欢迎区 -->
+  <view class="welcome-box flex justify-between align-center mb-30">
+    <view class="flex-col">
+      <text class="greeting font-bold">你好，{{userName}}</text>
+      <text class="date-text mt-10">今天是 {{currentDate}}</text>
+    </view>
+    <view class="status-tag tag-{{trainStatus === '未开始' ? 'normal' : (trainStatus === '进行中' ? 'primary' : 'success')}}">
+      {{trainStatus}}
+    </view>
+  </view>
+
+  <!-- 今日训练计划卡 -->
+  <view class="card plan-card">
+    <view class="flex justify-between align-center mb-20">
+      <view class="plan-title font-bold">今日任务: {{planName}}</view>
+      <view class="plan-target">目标 {{totalTarget}} 次</view>
+    </view>
+    
+    <view class="flex justify-between align-center mt-30 mb-20">
+      <view class="data-block">
+        <text class="data-num text-primary">{{finishedCount}}</text>
+        <text class="data-label">已完成</text>
+      </view>
+      <view class="data-block">
+        <text class="data-num">{{remainCount}}</text>
+        <text class="data-label">剩余</text>
+      </view>
+    </view>
+
+    <view class="progress-bar-container">
+      <view class="progress-bar">
+        <view class="progress-inner" style="width: {{progressPercent}}%"></view>
+      </view>
+    </view>
+
+    <button class="btn-primary mt-30 start-btn" bindtap="goToTrain">开始今日训练</button>
+  </view>
+
+  <!-- 并排小卡片区 -->
+  <view class="mini-cards-row flex justify-between mb-30">
+    <!-- 设备状态卡 -->
+    <view class="card mini-card flex-col align-center justify-center">
+      <view class="icon-circle mb-10 {{deviceStatus === '在线' ? 'bg-success' : 'bg-warning'}}"></view>
+      <text class="font-bold mb-10">{{deviceStatus}}</text>
+      <text class="device-subtext">同步: {{lastSyncTime}}</text>
+    </view>
+
+    <!-- 健康状态卡 -->
+    <view class="card mini-card flex-col align-center justify-center">
+      <view class="flex align-center justify-center mb-10 w-100">
+        <text class="font-bold text-danger">{{heartRate}}</text> <text class="unit-text ml-10">bpm</text>
+      </view>
+      <view class="flex align-center justify-center mb-10 w-100">
+        <text class="font-bold text-primary">{{bloodOxygen}}</text> <text class="unit-text ml-10">%</text>
+      </view>
+      <text class="tag-mini {{healthStatus === '正常' ? 'tag-success' : (healthStatus === '警告' ? 'tag-warning' : 'tag-danger')}}">{{healthStatus}}</text>
+    </view>
+  </view>
+
+  <!-- 快捷入口区 -->
+  <view class="shortcuts-group card">
+    <view class="section-title font-bold mb-20">快捷入口</view>
+    <view class="grid-wrap">
+      <view class="grid-item" bindtap="goToPage" data-url="/pages/data/data">
+        <view class="grid-icon bg-light-blue"><text>📈</text></view>
+        <text class="grid-text">训练记录</text>
+      </view>
+      <view class="grid-item" bindtap="goToPage" data-url="/pages/data/data">
+        <view class="grid-icon bg-light-green"><text>📋</text></view>
+        <text class="grid-text">健康数据</text>
+      </view>
+      <view class="grid-item" bindtap="goToPage" data-url="/pages/settings/settings">
+        <view class="grid-icon bg-light-orange"><text>⚙️</text></view>
+        <text class="grid-text">参数设置</text>
+      </view>
+      <view class="grid-item" bindtap="goToPage" data-url="/pages/about/about">
+        <view class="grid-icon bg-light-purple"><text>ℹ️</text></view>
+        <text class="grid-text">关于</text>
+      </view>
+    </view>
+  </view>
+</view>

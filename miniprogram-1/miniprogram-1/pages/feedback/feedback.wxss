@@ -1,0 +1,36 @@
+page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+}
+.feedback-page {
+  padding: 40rpx;
+}
+.w-100 { width: 100%; }
+.section-title {
+  font-size: 32rpx;
+  color: var(--text-main);
+}
+.input-card {
+  padding: 30rpx;
+}
+.fb-textarea {
+  height: 300rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+.placeholder-class {
+  color: var(--text-muted);
+}
+input {
+  font-size: 28rpx;
+}
+.round-btn {
+  border-radius: 50rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+  padding: 0;
+  font-size: 32rpx;
+}

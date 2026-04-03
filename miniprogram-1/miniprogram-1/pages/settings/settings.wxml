@@ -1,0 +1,100 @@
+<view class="container settings-page page-enter">
+  <view class="header flex justify-between align-center mb-20">
+    <view class="section-title mb-0">基础信息</view>
+    <view class="edit-btn" bindtap="toggleEdit">
+      <text class="text-primary">{{isEditMode ? '取消' : '编辑'}}</text>
+    </view>
+  </view>
+
+  <view class="card settings-card flex-col mb-30">
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">昵称</text>
+      <input wx:if="{{isEditMode}}" class="s-input" value="{{settings.nickName}}" 
+             data-field="nickName" bindinput="inputChange" />
+      <text wx:else class="s-val">{{settings.nickName}}</text>
+    </view>
+    
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">年龄</text>
+      <input wx:if="{{isEditMode}}" class="s-input" type="number" 
+             value="{{settings.age}}" data-field="age" bindinput="inputChange" />
+      <text wx:else class="s-val">{{settings.age}} 岁</text>
+    </view>
+    
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">性别</text>
+      <radio-group wx:if="{{isEditMode}}" class="flex" data-field="gender" bindchange="inputChange">
+        <label class="mr-20 flex align-center"><radio value="男" checked="{{settings.gender == '男'}}" color="#2f54eb"/> 男</label>
+        <label class="flex align-center"><radio value="女" checked="{{settings.gender == '女'}}" color="#2f54eb"/> 女</label>
+      </radio-group>
+      <text wx:else class="s-val">{{settings.gender}}</text>
+    </view>
+
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">身高(cm)</text>
+      <input wx:if="{{isEditMode}}" class="s-input" type="number" 
+             value="{{settings.height}}" data-field="height" bindinput="inputChange" />
+      <text wx:else class="s-val">{{settings.height}} cm</text>
+    </view>
+    
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">体重(kg)</text>
+      <input wx:if="{{isEditMode}}" class="s-input" type="number" 
+             value="{{settings.weight}}" data-field="weight" bindinput="inputChange" />
+      <text wx:else class="s-val">{{settings.weight}} kg</text>
+    </view>
+  </view>
+
+  <view class="section-title mb-20">康复档案</view>
+  <view class="card settings-card flex-col mb-30">
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">康复部位</text>
+      <radio-group wx:if="{{isEditMode}}" class="flex" data-field="rehabPart" bindchange="inputChange">
+        <label class="mr-20 flex align-center"><radio value="左肩膀" checked="{{settings.rehabPart == '左肩膀'}}" color="#2f54eb"/>左侧</label>
+        <label class="flex align-center"><radio value="右肩膀" checked="{{settings.rehabPart == '右肩膀'}}" color="#2f54eb"/>右侧</label>
+      </radio-group>
+      <text wx:else class="s-val text-primary">{{settings.rehabPart}}</text>
+    </view>
+
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">康复阶段</text>
+      <picker wx:if="{{isEditMode}}" mode="selector" range="{{phases}}" bindchange="phaseChange">
+        <view class="s-input picker-input">{{settings.rehabPhase}} 〉</view>
+      </picker>
+      <text wx:else class="s-val">{{settings.rehabPhase}}</text>
+    </view>
+
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">当前目标</text>
+      <input wx:if="{{isEditMode}}" class="s-input" 
+             value="{{settings.target}}" data-field="target" bindinput="inputChange" />
+      <text wx:else class="s-val">{{settings.target}}</text>
+    </view>
+  </view>
+
+  <view class="section-title mb-20">健康预警参数</view>
+  <view class="card settings-card flex-col mb-40">
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">心率上限(bpm)</text>
+      <input wx:if="{{isEditMode}}" class="s-input text-danger" type="number" 
+             value="{{settings.hrLimit}}" data-field="hrLimit" bindinput="inputChange" />
+      <text wx:else class="s-val text-danger">{{settings.hrLimit}}</text>
+    </view>
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">血氧下限(%)</text>
+      <input wx:if="{{isEditMode}}" class="s-input text-warning" type="number" 
+             value="{{settings.boLimit}}" data-field="boLimit" bindinput="inputChange" />
+      <text wx:else class="s-val text-warning">{{settings.boLimit}}</text>
+    </view>
+    <view class="s-item flex justify-between align-center">
+      <text class="s-label">异常提醒开关</text>
+      <switch checked="{{settings.alertOn}}" disabled="{{!isEditMode}}" 
+              color="#2f54eb" data-field="alertOn" bindchange="inputChange"/>
+    </view>
+  </view>
+
+  <!-- 采用 flex 完美居中的保存按钮，加入 mt-auto 顶到底部 -->
+  <view class="btn-wrap mt-auto" wx:if="{{isEditMode}}">
+    <button class="save-btn" bindtap="saveSettings">保存修改</button>
+  </view>
+</view>

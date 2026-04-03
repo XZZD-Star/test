@@ -1,0 +1,26 @@
+<view class="container plan-page page-enter">
+  <view class="section-title mb-20">每日训练目标设置</view>
+  <view class="text-muted mb-40 text-sm">请根据医嘱和康复阶段，合理配置每个动作的训练次数。</view>
+
+  <view class="plan-list card">
+    <view class="plan-item flex justify-between align-center" 
+          wx:for="{{planConfig}}" wx:for-index="key" wx:for-item="val" wx:key="key">
+      <view class="action-name">
+        <text class="font-bold text-main">{{actionMap[key]}}</text>
+        <text class="key-text mt-10">{{key}}</text>
+      </view>
+      
+      <view class="stepper flex align-center">
+        <view class="step-btn minus" data-key="{{key}}" data-delta="-1" bindtap="changeCount">-</view>
+        <input class="step-input" type="number" 
+               value="{{val}}" data-key="{{key}}" bindinput="inputCount" />
+        <view class="step-btn plus" data-key="{{key}}" data-delta="1" bindtap="changeCount">+</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="action-wrap flex justify-between mt-auto pt-40">
+    <button class="btn-outline round-btn flex-1 mr-20" bindtap="restoreDefault">恢复默认</button>
+    <button class="btn-primary round-btn flex-1" bindtap="savePlan">保存计划</button>
+  </view>
+</view>

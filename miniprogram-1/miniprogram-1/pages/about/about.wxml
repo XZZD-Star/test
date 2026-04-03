@@ -1,0 +1,16 @@
+<view class="container flex-col align-center about-page pt-100 page-enter">
+  <view class="logo-box mb-30 flex align-center justify-center">
+    <text class="logo-icon">S</text>
+  </view>
+  <text class="app-name font-bold mb-10">{{name}}</text>
+  <text class="app-version text-muted mb-60">Version {{version}}</text>
+
+  <view class="card desc-card mb-40">
+    <text class="desc-title font-bold mb-20">关于项目</text>
+    <text class="desc-content">康复辅助助手是一款基于动作识别与生理监测的康复训练辅助工具，面向康复训练场景设计。希望通过智能化手段，帮助用户更安全、更规范、更清晰地完成日常康复训练。</text>
+  </view>
+  
+  <view class="footer text-muted font-bold text-center">
+    <text>由 Smart-Bracelet 研发团队提供技术支持</text>
+  </view>
+</view>

@@ -1,0 +1,61 @@
+page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+}
+.mine-page {
+  padding: 30rpx;
+}
+.user-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%);
+  padding: 40rpx 30rpx;
+}
+.avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  border: 4rpx solid #fff;
+  box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.1);
+}
+.nickname {
+  font-size: 36rpx;
+}
+.tag-mini {
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+}
+.target-text {
+  font-size: 26rpx;
+  color: var(--text-sub);
+}
+.days-text {
+  font-size: 24rpx;
+  color: var(--text-sub);
+}
+
+.list-card {
+  padding: 0 30rpx;
+}
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+.list-item:last-child {
+  border-bottom: none;
+}
+.item-title {
+  font-size: 30rpx;
+  color: var(--text-main);
+}
+.item-arrow {
+  color: #ccc;
+  font-size: 28rpx;
+}
+
+.footer-note {
+  font-size: 22rpx;
+  color: #bbb;
+}

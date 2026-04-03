@@ -1,0 +1,135 @@
+<view class="container health-page page-enter">
+  <view class="top-bg"></view>
+  
+  <view class="health-content">
+    <view class="section-title text-main font-bold mb-20">康复基本信息</view>
+    <view class="card data-card flex-col mb-40">
+      <view class="flex justify-between align-center mb-30">
+        <text class="c-label">康复部位</text>
+        <text class="c-val text-primary font-bold">{{st.rehabPart}}</text>
+      </view>
+      <view class="flex justify-between align-center mb-30">
+        <text class="c-label">康复阶段</text>
+        <view class="tag-primary px-20 py-6 round-tag">{{st.rehabPhase}}</view>
+      </view>
+      <view class="flex justify-between align-center">
+        <text class="c-label">当前目标</text>
+        <text class="c-val">{{st.target}}</text>
+      </view>
+    </view>
+
+    <view class="section-title text-main font-bold mb-20">身体基础指标</view>
+    <view class="card data-card flex-col mb-40">
+      <view class="grid-layout">
+        <view class="g-item">
+          <text class="g-val">{{st.age}}<text class="text-xs ml-10">岁</text></text>
+          <text class="g-label">年龄</text>
+        </view>
+        <view class="g-item divider-left">
+          <text class="g-val">{{st.height}}<text class="text-xs ml-10">cm</text></text>
+          <text class="g-label">身高</text>
+        </view>
+        <view class="g-item divider-top">
+          <text class="g-val">{{st.weight}}<text class="text-xs ml-10">kg</text></text>
+          <text class="g-label">体重</text>
+        </view>
+        <view class="g-item divider-top divider-left">
+          <text class="g-val {{bmiStatus !== '正常' ? 'text-warning' : 'text-success'}}">{{bmi}}</text>
+          <text class="g-label">BMI ({{bmiStatus}})</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-title text-main font-bold mb-20">康复建议摘要</view>
+    <view class="card suggest-card flex-col relative w-100">
+      <view class="flex align-center mb-20">
+        <image class="tip-icon" src="/static/plan_select.png"></image>
+        <text class="font-bold ml-10">阶段建议</text>
+      </view>
+      <text class="s-text">{{suggestionText}}</text>
+    </view>
+  </view>
+
+  <!-- 右下角悬浮 AI 入口 -->
+  <view class="ai-fab flex-col align-center justify-center box-shadow" bindtap="openAiModal">
+    <view class="ai-fab-core flex align-center justify-center">
+      <text class="ai-fab-icon">AI</text>
+    </view>
+    <text class="ai-fab-text font-bold mt-10">智能解读</text>
+  </view>
+
+  <!-- AI 底部弹层 / 抽屉 -->
+  <view class="ai-modal-mask {{showAiModal ? 'show' : ''}}" catchtap="closeAiModal" catchtouchmove="catchTouch">
+    <view class="ai-modal-content flex-col" catchtap="catchTouch">
+      
+      <!-- 弹层头部 -->
+      <view class="ai-modal-header flex justify-between align-center border-bottom pb-30 mb-20">
+        <view class="flex-col">
+          <text class="font-bold text-lg text-primary">康复辅助解读助手</text>
+          <text class="text-xs text-muted mt-10">基于当前健康档案生成定制化参考</text>
+        </view>
+        <view class="close-icon flex align-center justify-center" bindtap="closeAiModal"><text>×</text></view>
+      </view>
+
+      <!-- 滚动内容区 -->
+      <scroll-view scroll-y class="ai-modal-scroll flex-1 p-20">
+        
+        <view wx:if="{{!llmReport && !isAiLoading}}" class="flex-col align-center justify-center mt-60" style="opacity: 0.6; padding-top: 60rpx;">
+          <view class="ai-fab-core flex align-center justify-center mb-30" style="filter: grayscale(1); box-shadow: none;">
+            <text class="ai-fab-icon text-main">AI</text>
+          </view>
+          <text class="text-sub text-center" style="line-height: 1.8;">引擎已就绪\n请点击下方按钮读取档案并生成定制化报告</text>
+        </view>
+
+        <view wx:if="{{isAiLoading}}" class="loading-box flex-col align-center justify-center mt-60" style="padding-top: 60rpx;">
+          <view class="spinner mb-20"></view>
+          <text class="text-sub">AI 正在深度演算分析中...</text>
+        </view>
+
+        <!-- 结果展示面板 -->
+        <view wx:if="{{llmReport && !isAiLoading}}" class="llm-box mt-10">
+          <view class="llm-sec mb-40">
+            <text class="llm-title font-bold text-main mb-10">当前状态</text>
+            <text class="llm-text">{{llmReport.summary}}</text>
+          </view>
+          
+          <view class="llm-sec mb-40">
+            <text class="llm-title font-bold text-main mb-10">恢复进展</text>
+            <text class="llm-text">{{llmReport.progress}}</text>
+          </view>
+
+          <view class="llm-sec mb-40">
+            <text class="llm-title font-bold text-warning mb-10">风险提醒</text>
+            <view class="flex align-start mb-10" wx:for="{{llmReport.risks}}" wx:key="*this">
+              <text class="llm-bullet text-warning">!</text>
+              <text class="llm-text ml-10 flex-1">{{item}}</text>
+            </view>
+          </view>
+
+          <view class="llm-sec mb-40">
+            <text class="llm-title font-bold text-success mb-10">建议参考</text>
+            <view class="flex align-start mb-10" wx:for="{{llmReport.suggestions}}" wx:key="*this">
+              <text class="llm-bullet text-success">✓</text>
+              <text class="llm-text ml-10 flex-1">{{item}}</text>
+            </view>
+          </view>
+
+          <view class="llm-encourage flex align-center justify-center mb-20">
+            <text class="text-primary font-bold">"{{llmReport.encouragement}}"</text>
+          </view>
+        </view>
+        
+      </scroll-view>
+
+      <!-- 底部固定栏 -->
+      <view class="ai-modal-footer flex-col mt-auto pt-30 pb-30">
+        <text class="disclaimer text-xs text-muted text-center mb-20">· 本解读由大语言模型生成，仅用于辅助训练参考，不替代任何专业医生诊疗建议 ·</text>
+        <button class="btn-primary round-btn w-100 shadow" bindtap="requestAiReport" hover-class="none">
+          {{llmReport ? '重新生成解读' : '生成解读'}}
+        </button>
+      </view>
+
+    </view>
+  </view>
+
+</view>

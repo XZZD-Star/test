@@ -1,0 +1,134 @@
+page {
+  background-color: #f2f4f8;
+  min-height: 100vh;
+}
+.health-page {
+  position: relative;
+  padding: 0;
+  min-height: 100vh;
+}
+.w-100 { width: 100%; box-sizing: border-box; }
+.top-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 360rpx;
+  background: linear-gradient(180deg, rgba(47, 84, 235, 0.15) 0%, rgba(242, 244, 248, 1) 100%);
+  z-index: 0;
+}
+.health-content {
+  position: relative;
+  z-index: 1;
+  padding: 40rpx 30rpx;
+}
+.section-title {
+  font-size: 32rpx;
+  padding-left: 10rpx;
+}
+.data-card {
+  padding: 40rpx 30rpx;
+  background: #fff;
+}
+.c-label { font-size: 28rpx; color: var(--text-sub); }
+.c-val { font-size: 30rpx; color: var(--text-main); text-align: right; flex: 1; margin-left: 20rpx; }
+
+.round-tag { border-radius: 30rpx; font-size: 26rpx; background: rgba(47,84,235,0.1); color: var(--primary-color); padding: 6rpx 20rpx; }
+
+.grid-layout { display: flex; flex-wrap: wrap; }
+.g-item { width: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30rpx 0; }
+.g-val { font-size: 44rpx; font-weight: bold; color: var(--text-main); margin-bottom: 10rpx; }
+.g-label { font-size: 24rpx; color: var(--text-muted); }
+.divider-left { border-left: 2rpx solid #f0f0f0; }
+.divider-top { border-top: 2rpx solid #f0f0f0; }
+.text-xs { font-size: 24rpx; font-weight: normal; }
+
+.suggest-card {
+  padding: 40rpx;
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.05) 0%, rgba(82, 196, 26, 0.1) 100%);
+  border: 2rpx solid rgba(82, 196, 26, 0.2);
+}
+.tip-icon { width: 40rpx; height: 40rpx; filter: hue-rotate(220deg) brightness(0.8); }
+.s-text { font-size: 28rpx; color: var(--text-sub); line-height: 1.6; text-align: justify; }
+
+/* AI 悬浮按钮 (FAB) */
+.ai-fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 15%; /* 防止被底部 TabBar 或边界盖住 */
+  width: 120rpx;
+  height: 120rpx;
+  background: #ffffff;
+  border-radius: 50%;
+  z-index: 100;
+  border: 4rpx solid var(--primary-color);
+  box-shadow: 0 10rpx 30rpx rgba(47, 84, 235, 0.25);
+  transition: all 0.2s ease;
+}
+.ai-fab:active { transform: scale(0.92); }
+.ai-fab-core {
+  width: 66rpx;
+  height: 66rpx;
+  background: linear-gradient(135deg, #2f54eb 0%, #69c0ff 100%);
+  border-radius: 50%;
+  margin-top: -6rpx;
+}
+.ai-fab-icon { color: #fff; font-weight: 900; font-size: 32rpx; letter-spacing: 2rpx; }
+.ai-fab-text { font-size: 20rpx; color: var(--primary-color); position: absolute; bottom: 12rpx; }
+
+/* 黑色全屏遮罩 */
+.ai-modal-mask {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 998;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.ai-modal-mask.show { opacity: 1; pointer-events: auto; }
+
+/* 底部滑入抽屉 (Bottom Sheet) */
+.ai-modal-content {
+  position: absolute; left: 0; bottom: 0; width: 100%; height: 85vh;
+  background: #ffffff;
+  border-top-left-radius: 40rpx; border-top-right-radius: 40rpx;
+  transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  padding: 40rpx; padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box; display: flex; flex-direction: column;
+}
+.ai-modal-mask.show .ai-modal-content { transform: translateY(0); }
+
+.border-bottom { border-bottom: 2rpx solid #f0f2f5; }
+.pb-30 { padding-bottom: 30rpx; }
+.close-icon { width: 60rpx; height: 60rpx; font-size: 50rpx; color: #999; border-radius: 50%; background: #f4f6ff; }
+.close-icon:active { background: #e0e5f0; }
+
+.ai-modal-scroll { 
+  width: 100%; 
+  box-sizing: border-box; 
+  height: 0; /* 这是让 scroll-view 在 flex=1 下不撑破盒子的微信核心魔法 */
+}
+.p-20 { padding: 0 10rpx; }
+
+/* AI 正在加载画圈动画 */
+.spinner {
+  width: 60rpx; height: 60rpx;
+  border: 6rpx solid #f4f6ff;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.mt-60 { margin-top: 60rpx; }
+
+/* 大模型解读结果面板 */
+.llm-title { font-size: 30rpx; display: block; border-left: 8rpx solid var(--primary-color); padding-left: 12rpx; border-radius: 4rpx; }
+.llm-title.text-warning { border-color: var(--warning-color); }
+.llm-title.text-success { border-color: var(--success-color); }
+
+.llm-text { font-size: 28rpx; color: #444; line-height: 1.6; text-align: justify; }
+.llm-bullet { font-size: 28rpx; font-weight: bold; margin-top: 2rpx; flex-shrink: 0; }
+.llm-encourage {
+  padding: 30rpx; background: rgba(47, 84, 235, 0.05); border-radius: 20rpx;
+  text-align: center; font-size: 30rpx; line-height: 1.5; font-style: italic; border: 2rpx dashed rgba(47, 84, 235, 0.2);
+}
+
+.disclaimer { line-height: 1.4; display: block; letter-spacing: 1rpx; }
+.shadow { box-shadow: 0 10rpx 30rpx rgba(47, 84, 235, 0.2); }
+

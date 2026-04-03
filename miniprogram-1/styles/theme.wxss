@@ -1,0 +1,20 @@
+page {
+  --primary-color: #2f54eb; /* 蓝色 */
+  --success-color: #52c41a; /* 绿色 */
+  --warning-color: #faad14; /* 橙色 */
+  --danger-color: #f5222d;  /* 红色 */
+  
+  --bg-color: #f2f4f8; /* 浅灰背景 */
+  --card-bg: #ffffff;  /* 卡片纯白 */
+  
+  --text-main: #2b2b2b;
+  --text-sub: #666666;
+  --text-muted: #999999;
+  
+  --border-color: #e8e8e8;
+  --border-radius-sm: 12rpx;
+  --border-radius-md: 20rpx;
+  --border-radius-lg: 24rpx;
+
+  --shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}

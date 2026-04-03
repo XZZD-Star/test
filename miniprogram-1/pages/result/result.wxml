@@ -1,0 +1,45 @@
+<view class="container result-page flex-col align-center page-enter">
+  <!-- 完成状态提示 -->
+  <view class="status-circle flex-col align-center justify-center mb-40 mt-30">
+    <image class="success-icon mb-10" src="/static/plan_select.png"></image>
+    <text class="status-text font-bold text-primary">训练完成</text>
+  </view>
+
+  <view class="summary-card card w-100 flex-col align-center">
+    <text class="summary-title font-bold mb-30">本次训练总结</text>
+    <view class="data-grid w-100 mb-30">
+      <view class="grid-item">
+        <text class="item-val">{{duration}}</text>
+        <text class="item-label">训练时长</text>
+      </view>
+      <view class="grid-item">
+        <text class="item-val">{{finishedCount}}</text>
+        <text class="item-label">完成动作</text>
+      </view>
+      <view class="grid-item">
+        <text class="item-val">{{percent}}%</text>
+        <text class="item-label">完成率</text>
+      </view>
+      <view class="grid-item mt-20">
+        <text class="item-val">{{hr}} bpm</text>
+        <text class="item-label">平均心率</text>
+      </view>
+      <view class="grid-item mt-20">
+        <text class="item-val">{{bo}}%</text>
+        <text class="item-label">平均血氧</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card suggestion-card w-100 flex-col">
+    <text class="font-bold mb-20">康复建议</text>
+    <view class="suggestion-content flex">
+      <text class="content-text">{{suggestion}}</text>
+    </view>
+  </view>
+
+  <view class="action-btn-group w-100 mt-auto pt-40">
+    <button class="btn-primary mb-20 round-btn w-100" bindtap="goHome">返回首页</button>
+    <button class="btn-outline round-btn w-100" bindtap="goDetail">查看详细记录</button>
+  </view>
+</view>
