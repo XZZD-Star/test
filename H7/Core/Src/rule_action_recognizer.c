@@ -174,12 +174,15 @@ void RuleConfig_LoadDefault(RuleConfig *cfg)
 
   cfg->static_energy_th = 6.0f;
   cfg->n_static_frames = 10U;
-  cfg->start_energy_th = 15.0f;
+  cfg->start_energy_th = RULE_DEFAULT_START_ENERGY_TH;
+  cfg->start_confirm_frames = RULE_DEFAULT_START_CONFIRM_FRAMES;
 
   cfg->peak_enter_amp_th = 18.0f;
   cfg->peak_stable_delta_th = 1.5f;
   cfg->peak_stable_frames = 3U;
   cfg->peak_exit_drop_th = 2.0f;
+  cfg->peak_exit_min_hold_ms = RULE_DEFAULT_PEAK_EXIT_MIN_HOLD_MS;
+  cfg->peak_exit_confirm_frames = RULE_DEFAULT_PEAK_EXIT_CONFIRM_FRAMES;
 
   cfg->return_energy_th = 8.0f;
   cfg->return_axis_th = 5.0f;
@@ -215,7 +218,9 @@ void RuleEngine_ResetSession(RuleEngine *eng)
 
   memset(&eng->session, 0, sizeof(eng->session));
   eng->session.dominant_axis = AXIS_UPPER_YAW;
+  eng->start_confirm_count = 0U;
   eng->peak_stable_count = 0U;
+  eng->peak_exit_confirm_count = 0U;
   eng->return_stable_count = 0U;
   rule_reset_result(&eng->result);
 }
@@ -301,7 +306,20 @@ void RuleEngine_Update(
     case RULE_STATE_READY:
       if (motion_energy > eng->cfg.start_energy_th)
       {
-        rule_begin_action(eng);
+        if (eng->start_confirm_count < 0xFFFFU)
+        {
+          eng->start_confirm_count++;
+        }
+
+        if (eng->start_confirm_count >= eng->cfg.start_confirm_frames)
+        {
+          eng->start_confirm_count = 0U;
+          rule_begin_action(eng);
+        }
+      }
+      else
+      {
+        eng->start_confirm_count = 0U;
       }
       break;
 
@@ -320,6 +338,7 @@ void RuleEngine_Update(
         eng->session.has_peak_hold = 1U;
         eng->session.peak_enter_ms = eng->now_ms;
         eng->session.peak_hold_ms = 0U;
+        eng->peak_exit_confirm_count = 0U;
         Rule_UpdatePeakStats(&eng->session, eng->delta);
         eng->state = RULE_STATE_PEAK_HOLD;
       }
@@ -566,10 +585,29 @@ uint8_t Rule_ShouldExitPeakHold(RuleEngine *eng)
   current_abs = rule_absf(eng->delta[(uint32_t)main_axis]);
   prev_abs = rule_absf(eng->prev_delta[(uint32_t)main_axis]);
 
+  if (eng->session.peak_hold_ms < eng->cfg.peak_exit_min_hold_ms)
+  {
+    eng->peak_exit_confirm_count = 0U;
+    return 0U;
+  }
+
   if ((prev_abs > current_abs) &&
       ((prev_abs - current_abs) >= eng->cfg.peak_exit_drop_th))
   {
-    return 1U;
+    if (eng->peak_exit_confirm_count < 0xFFFFU)
+    {
+      eng->peak_exit_confirm_count++;
+    }
+
+    if (eng->peak_exit_confirm_count >= eng->cfg.peak_exit_confirm_frames)
+    {
+      eng->peak_exit_confirm_count = 0U;
+      return 1U;
+    }
+  }
+  else
+  {
+    eng->peak_exit_confirm_count = 0U;
   }
 
   return 0U;

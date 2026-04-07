@@ -8,6 +8,10 @@ extern "C" {
 #include <stdint.h>
 
 #define RULE_TEMPLATE_DEBUG_MAX_COUNT      (8U)
+#define RULE_DEFAULT_START_ENERGY_TH       (40.0f)
+#define RULE_DEFAULT_START_CONFIRM_FRAMES  (4U)
+#define RULE_DEFAULT_PEAK_EXIT_MIN_HOLD_MS (800U)
+#define RULE_DEFAULT_PEAK_EXIT_CONFIRM_FRAMES (2U)
 #define RULE_DEFAULT_PEAK_HOLD_MIN_MS      (350U)
 #define RULE_DEFAULT_PEAK_HOLD_IDEAL_MIN_MS (600U)
 #define RULE_DEFAULT_PEAK_HOLD_IDEAL_MAX_MS (1000U)
@@ -168,11 +172,14 @@ typedef struct
   float static_energy_th;
   uint16_t n_static_frames;
   float start_energy_th;
+  uint16_t start_confirm_frames;
 
   float peak_enter_amp_th;
   float peak_stable_delta_th;
   uint16_t peak_stable_frames;
   float peak_exit_drop_th;
+  uint32_t peak_exit_min_hold_ms;
+  uint16_t peak_exit_confirm_frames;
 
   float return_energy_th;
   float return_axis_th;
@@ -190,7 +197,9 @@ typedef struct
   RuleState state;
 
   uint16_t static_frame_count;
+  uint16_t start_confirm_count;
   uint16_t peak_stable_count;
+  uint16_t peak_exit_confirm_count;
   uint16_t return_stable_count;
 
   uint32_t now_ms;

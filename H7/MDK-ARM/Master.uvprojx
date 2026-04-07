@@ -2174,6 +2174,31 @@
               <FileType>5</FileType>
               <FilePath>..\BSP\debug_uart7.h</FilePath>
             </File>
+            <File>
+              <FileName>uart7_role.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\uart7_role.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart_screen.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\uart_screen.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_screen.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\uart_screen.h</FilePath>
+            </File>
+            <File>
+              <FileName>health_monitor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\health_monitor.c</FilePath>
+            </File>
+            <File>
+              <FileName>health_monitor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\BSP\health_monitor.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

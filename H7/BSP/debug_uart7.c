@@ -1,10 +1,13 @@
 #include "debug_uart7.h"
+#include "uart7_role.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "usart.h"
+
+#if APP_UART7_IS_DEBUG
 
 #define DEBUG_UART7_BUFFER_SIZE 256U
 
@@ -102,3 +105,31 @@ void Debug_LogBio(int32_t heart_rate, int32_t spo2, int8_t hr_valid, int8_t spo2
                (int)hr_valid,
                (int)spo2_valid);
 }
+
+#else
+
+void Debug_Printf(const char *fmt, ...)
+{
+  (void)fmt;
+}
+
+void Debug_LogEspTx(const char *line)
+{
+  (void)line;
+}
+
+void Debug_LogEspRx(const uint8_t *data, uint16_t len)
+{
+  (void)data;
+  (void)len;
+}
+
+void Debug_LogBio(int32_t heart_rate, int32_t spo2, int8_t hr_valid, int8_t spo2_valid)
+{
+  (void)heart_rate;
+  (void)spo2;
+  (void)hr_valid;
+  (void)spo2_valid;
+}
+
+#endif

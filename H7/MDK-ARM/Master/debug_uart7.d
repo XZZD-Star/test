@@ -1,6 +1,7 @@
 master\debug_uart7.o: ..\BSP\debug_uart7.c
 master\debug_uart7.o: ..\BSP\debug_uart7.h
 master\debug_uart7.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\stdint.h
+master\debug_uart7.o: ..\BSP\uart7_role.h
 master\debug_uart7.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\stdarg.h
 master\debug_uart7.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\stdio.h
 master\debug_uart7.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\string.h

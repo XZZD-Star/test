@@ -53,6 +53,8 @@
 "master\mqttkit.o"
 "master\onenet.o"
 "master\debug_uart7.o"
+"master\uart_screen.o"
+"master\health_monitor.o"
 "master\network.o"
 "master\network_data.o"
 "master\network_data_params.o"

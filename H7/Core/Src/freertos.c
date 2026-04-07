@@ -36,6 +36,9 @@
 #include "ESP8266.h"
 #include "onenet.h"
 #include "debug_uart7.h"
+#include "uart7_role.h"
+#include "uart_screen.h"
+#include "health_monitor.h"
 #include "motion_mode.h"
 #include "motion_ai.h"
 #include "motion_window_test.h"
@@ -83,6 +86,8 @@ extern volatile uint8_t  g_motion_ai_restart_req;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define SCREEN_BOOT_READY_DELAY_MS   1200U
+#define SCREEN_PAGE_SETTLE_DELAY_MS  50U
 
 /* USER CODE END PD */
 
@@ -99,14 +104,14 @@ extern TIM_HandleTypeDef htim2;
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_size = 128 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for Task1 */
 osThreadId_t Task1Handle;
 const osThreadAttr_t Task1_attributes = {
   .name = "Task1",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
 /* Definitions for Task2 */
@@ -149,6 +154,8 @@ static void task1_output_rule_debug(
   const motion_fused_frame_t *frame,
   const RuleEngine *eng);
 static int32_t task1_bio_value_or_invalid(int32_t value, int8_t valid);
+static void screen_component_probe_init(void);
+static void screen_component_probe_tick(void);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -198,11 +205,13 @@ void MX_FREERTOS_Init(void) {
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
+#if !(APP_UART7_IS_SCREEN && APP_SCREEN_ISOLATION_ENABLED)
   /* creation of Task1 */
   Task1Handle = osThreadNew(StartTask1, NULL, &Task1_attributes);
 
   /* creation of Task2 */
   Task2Handle = osThreadNew(StartTask2, NULL, &Task2_attributes);
+#endif
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -210,7 +219,9 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_EVENTS */
   /* add events, ... */
+#if !(APP_UART7_IS_SCREEN && APP_SCREEN_ISOLATION_ENABLED)
 HAL_TIM_Base_Start_IT(&htim2);
+#endif
 
   /* USER CODE END RTOS_EVENTS */
 
@@ -226,9 +237,30 @@ HAL_TIM_Base_Start_IT(&htim2);
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
+#if APP_UART7_IS_SCREEN
+  Screen_Init(&huart7, SCREEN_TYPE_NEXTION, SCREEN_BAUD_115200);
+  /* Give the screen enough time to finish booting before the first page command. */
+  osDelay(SCREEN_BOOT_READY_DELAY_MS);
+#if APP_SCREEN_IS_HEALTH_MONITOR
+  HealthMonitor_Init();
+#else
+  screen_component_probe_init();
+#endif
+#endif
+
   /* Infinite loop */
   for(;;)
   {
+#if APP_UART7_IS_SCREEN
+#if APP_SCREEN_IS_HEALTH_MONITOR
+    /* Re-assert page 0 in case the initial page switch was missed during power-up. */
+    HealthMonitor_SetPage(0U);
+    osDelay(SCREEN_PAGE_SETTLE_DELAY_MS);
+    HealthMonitor_SendDemoFrame();
+#else
+    screen_component_probe_tick();
+#endif
+#endif
     osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
@@ -648,20 +680,20 @@ static void task1_process_fused_frame(const motion_fused_frame_t *frame)
 
 static void task1_output_capture_csv(const motion_fused_frame_t *frame)
 {
-  int32_t upper_hr;
-  int32_t upper_spo2;
+  int32_t bio_hr;
+  int32_t bio_spo2;
 
   if (frame == NULL)
   {
     return;
   }
 
-  upper_hr = task1_bio_value_or_invalid(
-    frame->upper_bio.heart_rate,
-    frame->upper_bio.hr_valid);
-  upper_spo2 = task1_bio_value_or_invalid(
-    frame->upper_bio.spo2,
-    frame->upper_bio.spo2_valid);
+  bio_hr = task1_bio_value_or_invalid(
+    frame->fore_bio.heart_rate,
+    frame->fore_bio.hr_valid);
+  bio_spo2 = task1_bio_value_or_invalid(
+    frame->fore_bio.spo2,
+    frame->fore_bio.spo2_valid);
 
   if (g_task1_output_state.capture_header_printed == 0U)
   {
@@ -677,13 +709,13 @@ static void task1_output_capture_csv(const motion_fused_frame_t *frame)
          frame->fore_yaw,
          frame->fore_pitch,
          frame->fore_roll,
-         (long)upper_hr,
-         (int)frame->upper_bio.hr_valid,
-         (long)upper_spo2,
-         (int)frame->upper_bio.spo2_valid,
-         (unsigned long)frame->upper_bio.ppg_fill,
-         (unsigned long)frame->upper_bio.ppg_calc_count,
-         (unsigned long)frame->upper_bio.ppg_pending,
+         (long)bio_hr,
+         (int)frame->fore_bio.hr_valid,
+         (long)bio_spo2,
+         (int)frame->fore_bio.spo2_valid,
+         (unsigned long)frame->fore_bio.ppg_fill,
+         (unsigned long)frame->fore_bio.ppg_calc_count,
+         (unsigned long)frame->fore_bio.ppg_pending,
          (unsigned long)frame->lost_u,
          (unsigned long)frame->lost_f,
          (unsigned long)frame->align_fail_count);
@@ -810,11 +842,14 @@ static void task1_output_rule_debug(
 {
   const ActionSession *session;
   const ActionResult *latched_result;
-  const ActionResult *display_result;
   const ActionTemplate *templates;
-  ActionResult preview_result;
+  const ActionResult *display_result;
+  ActionType preview_action;
+  AxisIndex main_axis;
+  float main_amp;
+  uint32_t peak_hold_ms;
+  uint32_t total_time_ms;
   uint32_t template_count;
-  uint32_t idx;
 
   if ((frame == NULL) || (eng == NULL))
   {
@@ -825,86 +860,65 @@ static void task1_output_rule_debug(
   latched_result = RuleEngine_GetResult(eng);
   template_count = eng->template_count;
   templates = eng->templates;
+  preview_action = ACTION_UNKNOWN;
+  main_axis = AXIS_UPPER_YAW;
+  main_amp = 0.0f;
+  peak_hold_ms = 0U;
+  total_time_ms = 0U;
 
   if ((templates == NULL) || (template_count == 0U))
   {
     templates = Rule_GetDefaultTemplates(&template_count);
   }
 
-  memset(&preview_result, 0, sizeof(preview_result));
-  (void)Rule_RecognizeAction(session, templates, template_count, &preview_result);
-  Rule_EvaluateResult(&eng->cfg, session, &preview_result);
+  preview_action = Rule_RecognizeAction(session, templates, template_count, NULL);
 
   if ((latched_result != NULL) && (latched_result->valid != 0U))
   {
     display_result = latched_result;
+    main_axis = latched_result->primary_axis;
+    main_amp = latched_result->primary_axis_amp;
+    peak_hold_ms = latched_result->peak_hold_ms;
+    total_time_ms = latched_result->total_time_ms;
   }
   else
   {
-    display_result = &preview_result;
+    display_result = NULL;
+    if (session != NULL)
+    {
+      main_axis = session->dominant_axis;
+      main_amp = session->dominant_amp;
+      peak_hold_ms = session->peak_hold_ms;
+      total_time_ms = session->total_time_ms;
+    }
   }
 
   if (g_task1_output_state.rule_header_printed == 0U)
   {
-    printf("ts_ms,state,motion_energy,baseline_valid,session_active,peak_count,preview_action,final_action,matched_template,match_score,complete,timed_out,complete_score,amp_score,peak_score,total_score,grade,primary_axis,primary_axis_amp,peak_hold_ms,total_time_ms,amp_upper_yaw,amp_upper_pitch,amp_upper_roll,amp_fore_yaw,amp_fore_pitch,amp_fore_roll,peak_upper_yaw,peak_upper_pitch,peak_upper_roll,peak_fore_yaw,peak_fore_pitch,peak_fore_roll");
-    for (idx = 0U; idx < preview_result.template_debug_count; idx++)
-    {
-      printf(",pass_%s,dist_%s",
-             preview_result.template_debug[idx].name,
-             preview_result.template_debug[idx].name);
-    }
-    printf("\r\n");
+    printf("ts_ms,state,motion_energy,baseline_valid,session_active,preview_action,final_action,matched_template,match_score,score,grade,complete,timed_out,main_axis,main_axis_amp,peak_hold_ms,total_time_ms\r\n");
     g_task1_output_state.rule_header_printed = 1U;
   }
 
-  printf("%llu,%s,%.4f,%u,%u,%lu,%s,%s,%s,%.4f,%u,%u,%u,%u,%u,%u,%s,%s,%.4f,%lu,%lu,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f",
+  printf("%llu,%s,%.4f,%u,%u,%s,%s,%s,%.4f,%u,%s,%u,%u,%s,%.4f,%lu,%lu\r\n",
          (unsigned long long)(frame->ts_us / 1000ULL),
          Rule_StateName(eng->state),
          eng->motion_energy,
          (unsigned int)eng->baseline_valid,
          (unsigned int)((session != NULL) ? session->active : 0U),
-         (unsigned long)((session != NULL) ? session->peak_count : 0U),
-         Rule_ActionName(preview_result.action),
-         Rule_ActionName(display_result->action),
-         (display_result->matched_template_name != NULL) ? display_result->matched_template_name : "unknown",
-         (display_result->matched_template != NULL) ? display_result->match_score : -1.0f,
-         (unsigned int)display_result->complete,
-         (unsigned int)display_result->timed_out,
-         (unsigned int)display_result->completeness_score,
-         (unsigned int)display_result->amplitude_score,
-         (unsigned int)display_result->peak_hold_score,
-         (unsigned int)display_result->score,
-         Rule_GradeName(display_result->grade),
-         Rule_AxisName(display_result->primary_axis),
-         display_result->primary_axis_amp,
-         (unsigned long)display_result->peak_hold_ms,
-         (unsigned long)display_result->total_time_ms,
-         (session != NULL) ? session->amp[AXIS_UPPER_YAW] : 0.0f,
-         (session != NULL) ? session->amp[AXIS_UPPER_PITCH] : 0.0f,
-         (session != NULL) ? session->amp[AXIS_UPPER_ROLL] : 0.0f,
-         (session != NULL) ? session->amp[AXIS_FORE_YAW] : 0.0f,
-         (session != NULL) ? session->amp[AXIS_FORE_PITCH] : 0.0f,
-         (session != NULL) ? session->amp[AXIS_FORE_ROLL] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_UPPER_YAW] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_UPPER_PITCH] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_UPPER_ROLL] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_FORE_YAW] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_FORE_PITCH] : 0.0f,
-         (session != NULL) ? session->peak_mean[AXIS_FORE_ROLL] : 0.0f);
-
-  for (idx = 0U; idx < display_result->template_debug_count; idx++)
-  {
-    float distance_value;
-
-    distance_value = (display_result->template_debug[idx].filter_passed != 0U) ?
-      display_result->template_debug[idx].distance_score : -1.0f;
-
-    printf(",%u,%.3f",
-           (unsigned int)display_result->template_debug[idx].filter_passed,
-           distance_value);
-  }
-
-  printf("\r\n");
+         Rule_ActionName(preview_action),
+         Rule_ActionName((display_result != NULL) ? display_result->action : ACTION_UNKNOWN),
+         ((display_result != NULL) && (display_result->matched_template_name != NULL)) ?
+           display_result->matched_template_name : "unknown",
+         ((display_result != NULL) && (display_result->matched_template != NULL)) ?
+           display_result->match_score : -1.0f,
+         (unsigned int)((display_result != NULL) ? display_result->score : 0U),
+         Rule_GradeName((display_result != NULL) ? display_result->grade : RULE_GRADE_FAIL),
+         (unsigned int)((display_result != NULL) ? display_result->complete : 0U),
+         (unsigned int)((display_result != NULL) ? display_result->timed_out : 0U),
+         Rule_AxisName(main_axis),
+         main_amp,
+         (unsigned long)peak_hold_ms,
+         (unsigned long)total_time_ms);
 }
 
 static int32_t task1_bio_value_or_invalid(int32_t value, int8_t valid)
@@ -917,5 +931,51 @@ static int32_t task1_bio_value_or_invalid(int32_t value, int8_t valid)
   return value;
 }
 
+static void screen_component_probe_init(void)
+{
+#if APP_UART7_IS_SCREEN && APP_SCREEN_IS_COMPONENT_PROBE
+  Screen_Nextion_SetPage(0U);
+  osDelay(SCREEN_PAGE_SETTLE_DELAY_MS);
+
+  Screen_Nextion_SetText("txt_time", "TIME_INIT");
+  Screen_Nextion_SetText("txt_temp", "TEMP_INIT");
+  Screen_Nextion_SetText("txt_hum", "HUM_INIT");
+  Screen_Nextion_SetText("txt_rate", "66");
+  Screen_Nextion_SetText("txt_bpm", "BPM");
+  Screen_Nextion_SetValue("j0", 25);
+  Screen_Nextion_SetPicture("x0", 0U);
+  Screen_Nextion_SetPicture("x2", 7U);
+#endif
+}
+
+static void screen_component_probe_tick(void)
+{
+#if APP_UART7_IS_SCREEN && APP_SCREEN_IS_COMPONENT_PROBE
+  static uint32_t counter = 0U;
+  char text[24];
+
+  Screen_Nextion_SetPage(0U);
+  osDelay(SCREEN_PAGE_SETTLE_DELAY_MS);
+
+  (void)snprintf(text, sizeof(text), "TIME_%lu", (unsigned long)(counter % 1000U));
+  Screen_Nextion_SetText("txt_time", text);
+
+  (void)snprintf(text, sizeof(text), "TEMP_%lu", (unsigned long)((counter + 1U) % 1000U));
+  Screen_Nextion_SetText("txt_temp", text);
+
+  (void)snprintf(text, sizeof(text), "HUM_%lu", (unsigned long)((counter + 2U) % 1000U));
+  Screen_Nextion_SetText("txt_hum", text);
+
+  (void)snprintf(text, sizeof(text), "%lu", (unsigned long)(60U + (counter % 30U)));
+  Screen_Nextion_SetText("txt_rate", text);
+  Screen_Nextion_SetText("txt_bpm", "BPM");
+
+  Screen_Nextion_SetValue("j0", (int32_t)(counter % 100U));
+  Screen_Nextion_SetPicture("x0", (uint16_t)(counter % 6U));
+  Screen_Nextion_SetPicture("x2", 7U);
+
+  counter++;
+#endif
+}
 /* USER CODE END Application */
 

@@ -61,6 +61,9 @@ master\freertos.o: D:\Keil_newset MDK\ARM\ARM\ARMCC\Bin\..\include\ctype.h
 master\freertos.o: ../BSP/ESP8266.h
 master\freertos.o: ../BSP/onenet.h
 master\freertos.o: ../BSP/debug_uart7.h
+master\freertos.o: ../BSP/uart7_role.h
+master\freertos.o: ../BSP/uart_screen.h
+master\freertos.o: ../BSP/health_monitor.h
 master\freertos.o: ../Core/Inc/motion_mode.h
 master\freertos.o: ../Core/Inc/motion_ai.h
 master\freertos.o: ../X-CUBE-AI/App/app_x-cube-ai.h
